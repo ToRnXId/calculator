@@ -31,10 +31,14 @@ namespace Calculator
             }
         }
 
+        string lblTextValue = null;
+        string digits = "0123456789";
+        string mathSigns = "+-*/";
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string stringButton = (e.OriginalSource as Button).Content as string;
-            string lblTextValue = null;
+
             switch (stringButton)
             {
                 case "%":
@@ -48,23 +52,29 @@ namespace Calculator
                     lblTextHistory.Text = null;
                     break;
                 case "Erase":
-                    if (lblText.Text.Length > 1)
+                    if (lblText.Text.Length > 0)
                     {
                         lblText.Text = lblText.Text.Remove(lblText.Text.Length - 1);
 
-                    }
-                    else
-                    {
+                        if (lblTextHistory.Text.Contains("mathSigns"))
+                        {
+                            lblTextHistory.Text = lblText.Text;
+                        }
+                        lblTextHistory.Text = lblText.Text;
+                    } else {
                         lblText.Text = "0";
                     }
-                    lblTextHistory.Text = lblText.Text;
+                    
                     break;
                 case "1/x":
                     if (!stringButton.Contains("+-*/"))
                     {
-                        int digit = int.Parse(lblText.Text);
+                        int digit = int.Parse(lblTextHistory.Text);
                         double x = 1 / digit;
-                        lblText.Text = x.ToString();
+                        lblTextHistory.Text = x.ToString();
+                    } else
+                    {
+                        lblTextHistory.Text = "Error";
                     }
                     break;
                 case "x2":
@@ -72,18 +82,22 @@ namespace Calculator
                 case "sqrt2":
                     break;
                 case "/":
-                    CheckRepeatSign(stringButton);
+                    //CheckRepeatSign(stringButton);
+                    ChechPreviousSign(stringButton);
                     break;
-                case "x":
-                    CheckRepeatSign(stringButton);
+                case "*":
+                    ChechPreviousSign(stringButton);
+                    //CheckRepeatSign(stringButton);
                     break;
                 case "-":
-                    lblTextHistory.Text += stringButton;
-                    CheckRepeatSign(stringButton);
-                    lblTextValue = "";
+                    ChechPreviousSign(stringButton);
+                    //CheckRepeatSign(stringButton);
+                    //lblTextHistory.Text += stringButton;
+                    //lblTextValue = "";
                     break;
                 case "+":
-                    CheckRepeatSign(stringButton);
+                    ChechPreviousSign(stringButton);
+                    //CheckRepeatSign(stringButton);
                     break;
                 case "+/-":
                     break;
@@ -98,14 +112,19 @@ namespace Calculator
                 default:
                     lblText.Text = lblText.Text.TrimStart('0');
                     lblTextHistory.Text = lblTextHistory.Text.TrimStart('0');
-
+                    if (lblTextHistory.Text.EndsWith("-"))
+                    {
+                        lblText.Text = "";
+                    }
                     lblTextValue = stringButton;
                     lblText.Text += lblTextValue;
                     lblTextHistory.Text += stringButton;
                     break;
             }
 
-            
+
+
+
             /*
             if (stringButton == "C") lblText.Text = "";
             else if (stringButton == "=")
@@ -115,12 +134,41 @@ namespace Calculator
             }
             else lblText.Text += stringButton;
             */
-           
+
+        }
+
+        private void ChechPreviousSign(string sign)
+        {
+            lblTextValue = sign;
+            int counter = 0;
+            foreach (char el in mathSigns)
+            {
+                string strElement = el.ToString();
+                if (lblTextHistory.Text.EndsWith(strElement))
+                {
+                    counter++;
+                    lblTextHistory.Text = lblTextHistory.Text.Remove(lblTextHistory.Text.Length - 1);
+                    lblTextHistory.Text += sign;
+                }
+            }
+
+            if (counter == 0)
+            {
+                lblTextHistory.Text += sign;
+            }
+
         }
 
         private void CheckRepeatSign(string sign)
         {
-            if (!lblTextHistory.Text.EndsWith(sign)) lblTextHistory.Text += sign;
+            lblTextValue = sign;
+            if (lblTextHistory.Text.EndsWith(mathSigns))
+            {
+                lblTextHistory.Text += 1;
+            } else
+            {
+                lblTextHistory.Text += sign;
+            }
         }
     }
 }

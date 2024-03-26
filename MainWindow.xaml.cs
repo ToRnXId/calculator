@@ -31,179 +31,160 @@ namespace Calculator
             }
         }
 
-        string lblTextValue = null;
-        string digit = "";
+        string solution = null; 
+        string stringDigit = "0";
+        double intDigit = 0;
         string digits = "0123456789";
         string mathSigns = "+-*/";
         string temp = "";
-        string[] arrayValues = {};
+        int counter = 0;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string stringButton = (e.OriginalSource as Button).Content as string;
-
+            string stringButton = (e.OriginalSource as Button)?.Content as string;
+            
             switch (stringButton)
             {
                 case "%":
-                    CheckRepeatSign(stringButton);
+                    CheckMathSignClicked(stringButton);
                     break;
                 case "CE":
                     txtblNumber.Text = "0";
                     break;
                 case "C":
                     txtblNumber.Text = "0";
-                    txtblResultat.Text = null;
+                    txtblResult.Text = null;
                     break;
                 case "Erase":
-                    if (txtblNumber.Text.Length >= 1)
-                    {
-                        txtblNumber.Text = txtblNumber.Text.Remove(txtblNumber.Text.Length - 1);
-
-                        //if (lblTextHistory.Text.Contains("mathSigns"))
-                        //{
-                        //    lblTextHistory.Text = lblText.Text;
-                        //}
-                        txtblResultat.Text = txtblNumber.Text;
-                    } else if (txtblNumber.Text.Length == 0 || txtblNumber.Text == null){
-                        txtblNumber.Text = "0";
-                    }
-                    
+                    txtblNumber.Text = txtblNumber.Text.Length < 1
+                        ? "0"
+                        : txtblNumber.Text.Remove(txtblNumber.Text.Length - 1);
                     break;
                 case "1/x":
-                    if (!stringButton.Contains(mathSigns))
+                    if (txtblNumber.Text != "0")
                     {
-                        int digit = int.Parse(txtblResultat.Text);
-                        double x = 1 / digit;
-                        txtblResultat.Text = x.ToString();
-                    } else
-                    {
-                        txtblResultat.Text = "Error";
+                        intDigit = int.Parse(txtblNumber.Text);
+                        txtblResult.Text += $"1/({intDigit})";
+                        txtblNumber.Text = $"{1/intDigit}";
                     }
+                    else
+                        MessageBox.Show("Dividing by zero error");
                     break;
                 case "x2":
+                    intDigit = int.Parse(txtblNumber.Text);
+                    txtblResult.Text += $"sqr({intDigit})";
                     break;
                 case "sqrt2":
+                    intDigit = int.Parse(txtblNumber.Text);
+                    txtblResult.Text += $"sqr({intDigit})";
                     break;
                 case "/":
-                    if (!txtblResultat.Text.EndsWith("-"))
-                        txtblResultat.Text += txtblNumber.Text;
-                    //CheckRepeatSign(stringButton);
                     CheckPreviousSign(stringButton);
                     break;
                 case "*":
-                    if (!txtblResultat.Text.EndsWith("-"))
-                        txtblResultat.Text += txtblNumber.Text;
                     CheckPreviousSign(stringButton);
-                    //CheckRepeatSign(stringButton);
                     break;
                 case "-":
-                    if (!txtblResultat.Text.EndsWith("-"))
-                        txtblResultat.Text += txtblNumber.Text;
-
                     CheckPreviousSign(stringButton);
-                    
-                    //CheckPreviousSign(stringButton);
-                    //CheckRepeatSign(stringButton);
-                    //lblTextHistory.Text += stringButton;
-                    //lblTextValue = "";
                     break;
                 case "+":
-                    if (!txtblResultat.Text.EndsWith("-"))
-                        txtblResultat.Text += txtblNumber.Text;
                     CheckPreviousSign(stringButton);
-                    //CheckRepeatSign(stringButton);
                     break;
                 case "+/-":
                     break;
                 case ",":
-                    CheckRepeatSign(stringButton);
+                    CheckMathSignClicked(stringButton);
                     break;
                 case "=":
-                    if (!txtblResultat.Text.Contains("="))
+                    if (!txtblResult.Text.Contains("="))
                     {
-                        string value = new DataTable().Compute(txtblResultat.Text, null).ToString();
+                        string value = new DataTable().Compute(txtblResult.Text, null).ToString();
                         txtblNumber.Text = value;
                         temp = value;
-                        txtblResultat.Text += ("=" + value);
+                        txtblResult.Text += ("=" + value);
                     }
                     else
                     {
-                        txtblResultat.Text = temp;
+                        txtblResult.Text = temp;
                     }
                     break;
                 default:
-                    if (txtblResultat.Text.Contains('-'))
-                        txtblNumber.Text = stringButton;
-                    else         
-                        txtblNumber.Text += stringButton;
-                    if (txtblNumber.Text.Length > 1)
-                        txtblNumber.Text = txtblNumber.Text.TrimStart('0');
-                    else if (txtblNumber.Text.Length < 1)
-                        txtblNumber.Text = "0";
-                    //lblTextHistory.Text = lblTextHistory.Text.TrimStart('0');
-                    digit = stringButton;
+                    txtblNumber.Text = txtblNumber.Text.TrimStart('0');
 
-
-
-                    /*if (lblTextHistory.Text.EndsWith("-"))
+                    if (txtblResult.Text.Length > 1)
                     {
-                        lblText.Text = "";
+                        counter++;
+                        txtblNumber.Text = "";
+                        stringDigit = stringButton;
+                        txtblNumber.Text += stringDigit;
+
                     }
-
-                    lblTextValue = stringButton;
-                    lblText.Text += lblTextValue;
-                    lblTextHistory.Text += stringButton;*/
+                    else
+                    {
+                        stringDigit = stringButton;
+                        txtblNumber.Text += stringDigit;
+                    }
+                    
                     break;
-            }
-
-
-
-
-            /*
-            if (stringButton == "C") lblText.Text = "";
-            else if (stringButton == "=")
-            {
-                string value = new DataTable().Compute(lblText.Text, null).ToString();
-                lblText.Text = value;
-            }
-            else lblText.Text += stringButton;
-            */
-
-        }
-
-        private void CheckPreviousSign(string sign)
-        {
-            //lblTextValue = sign;
-            int counter = 0;
-
-            foreach (char el in mathSigns)
-            {
-                string strElement = el.ToString();
-                if (txtblResultat.Text.EndsWith(strElement))
-                {
-                    counter++;
-                    txtblResultat.Text = txtblResultat.Text.Remove(txtblResultat.Text.Length - 1);
-                    txtblResultat.Text += sign;
-                    txtblNumber.Text = digit;
                 }
             }
 
-            if (counter == 0)
-            {
-                txtblResultat.Text += sign;
-            }
+        private void CheckPreviousSign(string sign)
+        {
+            //solution = sign;
 
+            //foreach (char el in mathSigns)
+            //{
+            //    if (txtblResult.Text.EndsWith(el.ToString()))
+            //    {
+            //        counter++;
+            //        txtblResult.Text = txtblResult.Text.Remove(txtblResult.Text.Length - 1);
+            //        txtblResult.Text += sign;
+
+            //        //stringDigit = "";
+            //        //txtblNumber.Text = stringDigit;
+            //    }
+            //}
+            if (counter > 0)
+            {
+                solution = $"{txtblResult.Text}{txtblNumber.Text}";
+                string value = new DataTable().Compute(solution, null).ToString();
+                txtblResult.Text = value + sign;
+                txtblNumber.Text = value;
+            }
+            if (txtblResult.Text.Length > 1)
+            {
+                //counter++;
+                txtblResult.Text = txtblResult.Text.Remove(txtblResult.Text.Length - 1);
+                txtblResult.Text += sign;
+
+                //stringDigit = "";
+                //txtblNumber.Text = stringDigit;
+                solution = $"{txtblResult.Text}";
+            } else {
+                txtblResult.Text = $"{txtblNumber.Text}{sign}";
+            } 
+            //else {
+                //txtblResult.Text = txtblResult.Text.Remove(txtblResult.Text.Length - 1);
+                //txtblResult.Text += $"{sign}";
+
+            //}
+            //stringDigit = "";
+            //txtblNumber.Text = stringDigit;
         }
 
-        private void CheckRepeatSign(string sign)
+        private void CheckMathSignClicked(string number)
         {
-            lblTextValue = sign;
-            if (txtblResultat.Text.EndsWith(mathSigns))
-            {
-                txtblResultat.Text += 1;
-            } else
-            {
-                txtblResultat.Text += sign;
+            solution += number;
+
+            foreach (char el in mathSigns)
+            { 
+                if (txtblResult.Text.EndsWith(el.ToString()))
+                {
+                    solution += number;
+                    string value = new DataTable().Compute(solution, null).ToString();
+                    txtblNumber.Text = value;
+                } 
             }
         }
     }

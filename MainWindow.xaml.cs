@@ -34,9 +34,6 @@ namespace Calculator
         string solution = null; 
         string stringDigit = "0";
         double intDigit = 0;
-        string digits = "0123456789";
-        string mathSigns = "+-*/";
-        string temp = "";
         int counter = 0;
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -45,147 +42,135 @@ namespace Calculator
             
             switch (stringButton)
             {
-                case "%":
-                    CheckMathSignClicked(stringButton);
+                case "%":  //not working
+
                     break;
+
                 case "CE":
                     txtblNumber.Text = "0";
+
                     break;
+
                 case "C":
                     txtblNumber.Text = "0";
                     txtblResult.Text = null;
+
                     break;
+
                 case "Erase":
                     txtblNumber.Text = txtblNumber.Text.Length < 1
                         ? "0"
                         : txtblNumber.Text.Remove(txtblNumber.Text.Length - 1);
+
                     break;
+
                 case "1/x":
                     if (txtblNumber.Text != "0")
                     {
                         intDigit = int.Parse(txtblNumber.Text);
-                        txtblResult.Text += $"1/({intDigit})";
+                        txtblResult.Text += $"1/{intDigit}";
                         txtblNumber.Text = $"{1/intDigit}";
-                    }
-                    else
-                        MessageBox.Show("Dividing by zero error");
+                    } else MessageBox.Show("Dividing by zero error");
+
                     break;
+
                 case "x2":
                     intDigit = int.Parse(txtblNumber.Text);
-                    txtblResult.Text += $"sqr({intDigit})";
+                    txtblResult.Text += $"sqr{intDigit}";
+
                     break;
+
                 case "sqrt2":
                     intDigit = int.Parse(txtblNumber.Text);
                     txtblResult.Text += $"sqr({intDigit})";
+
                     break;
+
                 case "/":
                     CheckPreviousSign(stringButton);
+
                     break;
+
                 case "*":
                     CheckPreviousSign(stringButton);
+
                     break;
+
                 case "-":
                     CheckPreviousSign(stringButton);
+
                     break;
+
                 case "+":
                     CheckPreviousSign(stringButton);
+
                     break;
+
                 case "+/-":
+                    txtblNumber.Text = txtblNumber.Text.StartsWith("-") 
+                        ? txtblNumber.Text = txtblNumber.Text.Remove(0, 1) 
+                        : txtblNumber.Text = "-" + txtblNumber.Text;
+
                     break;
-                case ",":
-                    CheckMathSignClicked(stringButton);
+
+                case ".":
+                    _ = !txtblNumber.Text.Contains(".") ? txtblNumber.Text += "." : null;
+
                     break;
+
                 case "=":
-                    if (!txtblResult.Text.Contains("="))
-                    {
-                        string value = new DataTable().Compute(txtblResult.Text, null).ToString();
+                    if (!txtblResult.Text.Contains('='))
+                        counter = 0;
+                        solution = $"{txtblResult.Text}{txtblNumber.Text}";
+                        string value = new DataTable().Compute(solution, null).ToString();
+                        value = value.Replace(',', '.');
+                        txtblResult.Text += txtblNumber.Text + "=";
                         txtblNumber.Text = value;
-                        temp = value;
-                        txtblResult.Text += ("=" + value);
-                    }
-                    else
-                    {
-                        txtblResult.Text = temp;
-                    }
+                        solution = "";
+
                     break;
+
                 default:
                     txtblNumber.Text = txtblNumber.Text.TrimStart('0');
 
-                    if (txtblResult.Text.Length > 1)
-                    {
-                        counter++;
-                        txtblNumber.Text = "";
-                        stringDigit = stringButton;
-                        txtblNumber.Text += stringDigit;
+                    if (txtblNumber.Text.Length < 15)
+                        if (txtblResult.Text.Length > 1)
+                        {
+                            counter++;
+                            stringDigit = stringButton;
+                            txtblNumber.Text += stringDigit;
+                        } else {
+                            stringDigit = stringButton;
+                            txtblNumber.Text += stringDigit;
+                        } 
 
-                    }
-                    else
-                    {
-                        stringDigit = stringButton;
-                        txtblNumber.Text += stringDigit;
-                    }
-                    
                     break;
                 }
             }
 
         private void CheckPreviousSign(string sign)
         {
-            //solution = sign;
-
-            //foreach (char el in mathSigns)
-            //{
-            //    if (txtblResult.Text.EndsWith(el.ToString()))
-            //    {
-            //        counter++;
-            //        txtblResult.Text = txtblResult.Text.Remove(txtblResult.Text.Length - 1);
-            //        txtblResult.Text += sign;
-
-            //        //stringDigit = "";
-            //        //txtblNumber.Text = stringDigit;
-            //    }
-            //}
             if (counter > 0)
-            {
                 solution = $"{txtblResult.Text}{txtblNumber.Text}";
                 string value = new DataTable().Compute(solution, null).ToString();
+                value = value.Replace(',', '.');
                 txtblResult.Text = value + sign;
                 txtblNumber.Text = value;
-            }
-            if (txtblResult.Text.Length > 1)
+
+            if (txtblResult.Text.Length > 0)
             {
-                //counter++;
+                if (txtblResult.Text.EndsWith("="))
+                    txtblResult.Text = txtblNumber.Text + "=";
                 txtblResult.Text = txtblResult.Text.Remove(txtblResult.Text.Length - 1);
                 txtblResult.Text += sign;
-
-                //stringDigit = "";
-                //txtblNumber.Text = stringDigit;
+                stringDigit = "";
+                txtblNumber.Text = stringDigit;
                 solution = $"{txtblResult.Text}";
             } else {
                 txtblResult.Text = $"{txtblNumber.Text}{sign}";
+                stringDigit = "";
+                txtblNumber.Text = stringDigit;
             } 
-            //else {
-                //txtblResult.Text = txtblResult.Text.Remove(txtblResult.Text.Length - 1);
-                //txtblResult.Text += $"{sign}";
-
-            //}
-            //stringDigit = "";
-            //txtblNumber.Text = stringDigit;
-        }
-
-        private void CheckMathSignClicked(string number)
-        {
-            solution += number;
-
-            foreach (char el in mathSigns)
-            { 
-                if (txtblResult.Text.EndsWith(el.ToString()))
-                {
-                    solution += number;
-                    string value = new DataTable().Compute(solution, null).ToString();
-                    txtblNumber.Text = value;
-                } 
-            }
         }
     }
 }

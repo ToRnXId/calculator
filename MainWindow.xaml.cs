@@ -25,9 +25,7 @@ namespace Calculator
             foreach(UIElement el in grMainRoot.Children)
             {
                 if (el is Button)
-                {
                     ((Button)el).Click += Button_Click;
-                }
             }
         }
 
@@ -120,6 +118,7 @@ namespace Calculator
 
                 case "=":
                     if (!txtblResult.Text.Contains('='))
+                    {
                         counter = 0;
                         solution = $"{txtblResult.Text}{txtblNumber.Text}";
                         string value = new DataTable().Compute(solution, null).ToString();
@@ -128,12 +127,14 @@ namespace Calculator
                         txtblNumber.Text = value;
                         solution = "";
 
+                    }
                     break;
 
                 default:
                     txtblNumber.Text = txtblNumber.Text.TrimStart('0');
 
                     if (txtblNumber.Text.Length < 15)
+                    {
                         if (txtblResult.Text.Length > 1)
                         {
                             counter++;
@@ -142,7 +143,8 @@ namespace Calculator
                         } else {
                             stringDigit = stringButton;
                             txtblNumber.Text += stringDigit;
-                        } 
+                        }
+                    }
 
                     break;
                 }
@@ -151,11 +153,13 @@ namespace Calculator
         private void CheckPreviousSign(string sign)
         {
             if (counter > 0)
+            {
                 solution = $"{txtblResult.Text}{txtblNumber.Text}";
                 string value = new DataTable().Compute(solution, null).ToString();
                 value = value.Replace(',', '.');
                 txtblResult.Text = value + sign;
                 txtblNumber.Text = value;
+            }
 
             if (txtblResult.Text.Length > 0)
             {

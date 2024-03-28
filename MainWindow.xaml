@@ -5,9 +5,99 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculator"
         mc:Ignorable="d"
-        Title="Calculator" Height="500" Width="300"
+        Title="Calculator" Height="510" Width="340"
         MinHeight="500" MinWidth="300" WindowStartupLocation="CenterScreen" >
-    <Grid x:Name="grMainRoot" Background="White">
+    <Window.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="RoundedSignButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="#323232"/>
+            <Setter Property="BorderBrush" Value="#323232"/>
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#3b3b3b"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#3b3b3b"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#323232"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#323232"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="#202020"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#202020"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RoundedNumberButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="#3b3b3b"/>
+            <Setter Property="BorderBrush" Value="#3b3b3b"/>
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#323232"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#323232"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#3b3b3b"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#3b3b3b"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="#202020"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="#202020"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="grMainRoot" Background="#2B2B2B" >
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
@@ -30,30 +120,30 @@
                    Foreground="Gray" />
         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" 
                    HorizontalAlignment="Right" VerticalAlignment="Bottom" 
-                   FontSize="50" x:Name="txtblNumber" Text="0" FontWeight="Bold"/>
-        <Button Grid.Column="0" Grid.Row="2">%</Button>
-        <Button Grid.Column="1" Grid.Row="2">CE</Button>
-        <Button Grid.Column="2" Grid.Row="2">C</Button>
-        <Button Grid.Column="3" Grid.Row="2">Erase</Button>
-        <Button Grid.Column="0" Grid.Row="3">1/x</Button>
-        <Button Grid.Column="1" Grid.Row="3">x2</Button>
-        <Button Grid.Column="2" Grid.Row="3">sqrt2</Button>
-        <Button Grid.Column="3" Grid.Row="3">/</Button>
-        <Button Grid.Column="0" Grid.Row="4">7</Button>
-        <Button Grid.Column="1" Grid.Row="4">8</Button>
-        <Button Grid.Column="2" Grid.Row="4">9</Button>
-        <Button Grid.Column="3" Grid.Row="4">*</Button>
-        <Button Grid.Column="0" Grid.Row="5">4</Button>
-        <Button Grid.Column="1" Grid.Row="5">5</Button>
-        <Button Grid.Column="2" Grid.Row="5">6</Button>
-        <Button Grid.Column="3" Grid.Row="5">-</Button>
-        <Button Grid.Column="0" Grid.Row="6">1</Button>
-        <Button Grid.Column="1" Grid.Row="6">2</Button>
-        <Button Grid.Column="2" Grid.Row="6">3</Button>
-        <Button Grid.Column="3" Grid.Row="6">+</Button>
-        <Button Grid.Column="0" Grid.Row="7">+/-</Button>
-        <Button Grid.Column="1" Grid.Row="7">0</Button>
-        <Button Grid.Column="2" Grid.Row="7">.</Button>
-        <Button Grid.Column="3" Grid.Row="7">=</Button>
+                   FontSize="50" x:Name="txtblNumber" Text="0" Foreground="White"/>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="0" Grid.Row="2" >%</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="1" Grid.Row="2" >CE</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="2" Grid.Row="2" >C</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="3" Grid.Row="2" >Erase</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="0" Grid.Row="3" >1/x</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="1" Grid.Row="3" >x2</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="2" Grid.Row="3" >sqrt2</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="3" Grid.Row="3" >/</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="0" Grid.Row="4" >7</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="1" Grid.Row="4" >8</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="2" Grid.Row="4" >9</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="3" Grid.Row="4" >*</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="0" Grid.Row="5" >4</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="1" Grid.Row="5" >5</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="2" Grid.Row="5" >6</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="3" Grid.Row="5" >-</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="0" Grid.Row="6" >1</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="1" Grid.Row="6" >2</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="2" Grid.Row="6" >3</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="3" Grid.Row="6" >+</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="0" Grid.Row="7" >+/-</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="1" Grid.Row="7" >0</Button>
+        <Button Style="{DynamicResource RoundedNumberButtonStyle}" Grid.Column="2" Grid.Row="7" >.</Button>
+        <Button Style="{DynamicResource RoundedSignButtonStyle}" Grid.Column="3" Grid.Row="7" >=</Button>
     </Grid>
 </Window>
